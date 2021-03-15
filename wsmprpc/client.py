@@ -30,7 +30,7 @@ class RPCFuture(asyncio.Future):
     def cancel(self):
         if not self.done():
             self._response_stream and self._response_stream.force_put_nowait(RPCClientError('Cancelled by client.'))
-            self._cancel_task = asyncio.create_task(self._cancel(self._msgid))
+            self._cancel_task = asyncio.get_event_loop().create_task(self._cancel(self._msgid))
         return asyncio.Future.cancel(self)
 
     def __del__(self):
@@ -38,7 +38,7 @@ class RPCFuture(asyncio.Future):
 
     def request(self):
         if not self._task:
-            self._task = asyncio.create_task(self._start)
+            self._task = asyncio.get_event_loop().create_task(self._start)
 
     def __aiter__(self):
         self.request()
@@ -58,7 +58,7 @@ class RPCClient:
         self._packer = msgpack.Packer(use_bin_type=True)
         self._mid = 0
         self._tasks = {}
-        asyncio.create_task(self._run())
+        asyncio.get_event_loop().create_task(self._run())
 
     def _next_msgid(self):
         if self._mid >= 2**20:

@@ -14,7 +14,7 @@ async def main():
             await asyncio.sleep(1)
             s.cancel()
         try:
-            asyncio.create_task(cancel_sleep())
+            asyncio.get_event_loop().create_task(cancel_sleep())
             print(await s)
         except asyncio.CancelledError as e:
             print('cancelled')
@@ -31,4 +31,4 @@ async def main():
             print(i)
 
 
-asyncio.run(main())
+asyncio.get_event_loop().run_until_complete(main())

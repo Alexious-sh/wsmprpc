@@ -63,10 +63,10 @@ class RPCServer:
                     q = None
 
                 if inspect.isasyncgenfunction(method):
-                    task = asyncio.create_task(self._on_request_gen(msgid, method, params, q))
+                    task = asyncio.get_event_loop().create_task(self._on_request_gen(msgid, method, params, q))
 
                 elif inspect.iscoroutinefunction(method):
-                    task = asyncio.create_task(self._on_request(msgid, method, params, q))
+                    task = asyncio.get_event_loop().create_task(self._on_request(msgid, method, params, q))
 
                 else:
                     try:
